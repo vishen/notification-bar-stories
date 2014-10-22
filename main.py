@@ -3,6 +3,8 @@ import json
 import webbrowser
 import requests
 import pprint
+from pync import Notifier
+
 
 REDDIT_URL = 'http://reddit.com/r/%(subreddit)s/%(ordering)s.json'
 
@@ -16,7 +18,7 @@ class Story(object):
         self.title = title.encode('utf-8')
         self.link = link.encode('utf-8')
         self.message = message.encode('utf-8')
-        self.comments_link = comments_link.encode('utf-8')
+        self.comments_link = "http://reddit.com" + comments_link.encode('utf-8')
         self.num_comments = num_comments
         self.found_time = datetime.datetime.now()
         self.source = source.encode('utf-8')
@@ -80,5 +82,9 @@ def get_reddit_stories(subreddit='all', ordering='hot', limit=5):
 
 if __name__ == '__main__':
     stories = get_reddit_stories('python')
+    group = 'Reddit Python'
     for story in stories:
-        story.show_all()
+        Notifier.notify(story.message, title=story.title, open=story.comments_link, group=group)
+        
+
+
